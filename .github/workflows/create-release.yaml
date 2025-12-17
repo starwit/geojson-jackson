@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       RELEASE_VERSION:
-        description: "Set release version (required)"
+        description: "Set release version (optional)"
         required: false
 
 permissions:
@@ -62,6 +62,8 @@ jobs:
         mvn -B release:clean --settings .github/workflows/settings.xml --settings .github/workflows/settings.xml --file pom.xml
       env:
          CI: false
+         MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
+         MAVEN_GPG_KEY: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Get tag name
