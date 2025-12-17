@@ -18,8 +18,8 @@
 	<description>A collection of Java POJOs for GeoJson</description>
 
 	<scm>
-		<connection>scm:git:git://github.com/starwit/geojson-jackson.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com:/starwit/geojson-jackson.git</developerConnection>
+		<connection>scm:git:https://github.com/starwit/geojson-jackson.git</connection>
+		<developerConnection>scm:git:https://github.com/starwit/geojson-jackson.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
