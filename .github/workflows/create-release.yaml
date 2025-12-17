@@ -35,12 +35,42 @@ jobs:
     - name: checkout
       uses: actions/checkout@v5
       with:
-        fetch-depth: '0'   
-
-    - name: Set Java lib version
+        fetch-depth: '0'  
+        
+        
+    - name: Maven release pepare
       run: | 
-        echo "new version manually set to ${{ env.RELEASE_VERSION }}"
-        mvn -B build-helper:parse-version versions:set -DnewVersion=${{ env.RELEASE_VERSION }} versions:commit --settings ${{ github.workspace }}/.github/workflows/settings.xml
+        git config --global user.email "code@starwit.de"
+        git config --global user.name "Starwit"
+        if [ ! -z "${{ env.RELEASE_VERSION }}" ]
+        then
+          echo "new version manually set to ${{ env.RELEASE_VERSION }}"
+          mvn -B build-helper:parse-version versions:set -DnewVersion=${{ env.RELEASE_VERSION }}-SNAPSHOT versions:commit --settings .github/workflows/settings.xml --file pom.xml
+        fi
+        echo "mvn generate-sources --file pom.xml"
+        mvn generate-sources --file pom.xml
+        echo "git add ."
+        git add .
+        modifications=$(git status | grep "modified" || true)
+        if [ ! -z "$modifications" ]
+        then
+          echo "modifications found: $modifications"
+          git commit -m "modified changelog"
+          git push
+        fi
+        mvn -B release:clean release:prepare -Darguments="-DskipTests" --settings .github/workflows/settings.xml --file pom.xml
+        mvn -B release:clean --settings .github/workflows/settings.xml --settings .github/workflows/settings.xml --file pom.xml
+      env:
+         CI: false
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Get tag name
+      run: |
+        echo "TAG=$( git describe --abbrev=0 )" >> $GITHUB_ENV
+
+    - name: Checkout tag
+      run: |
+        git checkout ${{ env.TAG }}
 
     - name: Build Java lib
       run: | 
@@ -49,10 +79,7 @@ jobs:
          CI: false
          MAVEN_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_SECRET_KEY_PASSWORD }}
          MAVEN_GPG_KEY: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
-
-    - name: Get tag name
-      run: |
-        echo "TAG=${{ env.RELEASE_VERSION }}" >> $GITHUB_ENV
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create github release
       run: gh release create ${{ env.TAG }} -F CHANGELOG.md ./target/*.jar ./target/*.asc
