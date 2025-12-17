@@ -220,6 +220,10 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>se.bjurr.gitchangelog</groupId>
+                <artifactId>git-changelog-maven-plugin</artifactId>
+            </plugin>
 		</plugins>
 	</build>
 
