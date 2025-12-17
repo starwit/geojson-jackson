@@ -1,11 +1,10 @@
-GeoJson POJOs for Jackson
-=========================
+# GeoJson POJOs for Jackson
+
 
 A small package of all GeoJson POJOs (Plain Old Java Objects) for serializing and 
 deserializing of objects via JSON Jackson Parser. This libary conforms to the 2008 GeoJSON specification.
 
-Usage
------
+## Usage
 
 If you know what kind of object you expect from a GeoJson file you can directly read it like this:
 
@@ -44,8 +43,8 @@ featureCollection.add(new Feature());
 String json= new ObjectMapper().writeValueAsString(featureCollection);
 ```
 
-Maven Central
--------------
+### Maven Central
+-----
 
 You can find the library in the Maven Central Repository.
 
@@ -57,3 +56,17 @@ You can find the library in the Maven Central Repository.
 </dependency>
 ```
 		
+## Dev & Build
+Library can be build using Maven and it needs PGP key/passphrase as env parameters. Thus you'll have to create an env.sh file (see [template](env.sh-template)) with working PGP credentials. Source env parameters with this command:
+
+```bash
+source env.sh
+```
+
+After that build & package library with the usual Maven command.
+
+```bash
+mvn package
+```
+
+Releasing to Maven central could also be done via command line but that is supposed to hapen via Github action.
