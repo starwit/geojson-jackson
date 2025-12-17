@@ -2,10 +2,6 @@ name: Publish libraries
 
 on:
   workflow_dispatch:
-    inputs:
-      RELEASE_VERSION:
-        description: "Set release version (required)"
-        required: true
 
 permissions:
   contents: write
@@ -20,12 +16,6 @@ jobs:
     runs-on: [self-hosted, linux, X64]
 
     steps:
-    - name: checkout
-      uses: actions/checkout@v5
-      with:
-        fetch-depth: '0'
-        ref: ${{ env.RELEASE_VERSION }}
-
     - name: Set up JDK 25
       uses: actions/setup-java@v5
       with:
@@ -35,15 +25,27 @@ jobs:
     - name: Set up Maven
       uses: stCarolas/setup-maven@v5
       with:
-         maven-version: 3.9.2
+         maven-version: 3.9.2    
+    
+    - name: checkout
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: '0'
+
+    - name: get last tag
+      run: |
+        echo "Getting last tagged versiont"
+        echo "TAG=$( git describe --abbrev=0 )" >> $GITHUB_ENV
+        echo "Publishing version $TAG"
+
+    - name: checkout
+      uses: actions/checkout@v5
+      with:
+        fetch-depth: '0'
+        ref: ${{ env.TAG }}
 
     - name: check git tag
       run: git status
-
-    - name: Set Java lib versionr
-      run: | 
-        echo "new version manually set to ${{ env.RELEASE_VERSION }}"
-        mvn -B build-helper:parse-version versions:set -DnewVersion=${{ env.RELEASE_VERSION }} versions:commit --settings ${{ github.workspace }}/.github/workflows/settings.xml
          
     - name: Build Maven project
       run: mvn clean -B package
