@@ -84,7 +84,7 @@ jobs:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create github release
-      run: gh release create ${{ env.TAG }} -F ./target/*.jar ./target/*.asc
+      run: gh release create ${{ env.TAG }} ./target/*.jar ./target/*.asc
       env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
