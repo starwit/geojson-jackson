@@ -77,9 +77,7 @@
 	</developers>
 
 	<properties>
-        <maven.compiler.source>25</maven.compiler.source>
-        <maven.compiler.target>25</maven.compiler.target>
-        <java-version>25</java-version>
+		<maven.compiler.release>25</maven.compiler.release>
 		<jackson-version>3.0.0</jackson-version>
 		<jackson-annotations-version>2.20</jackson-annotations-version>
 	</properties>
